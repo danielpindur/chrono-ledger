@@ -13,7 +13,7 @@ fi
 MIGRATION_NAME=$1
 
 # Run the command to add the migration
-dotnet ef migrations add "$MIGRATION_NAME" --project ChronoLeger.SchemaSync --startup-project ../ChronoLeger
+dotnet ef migrations add "$MIGRATION_NAME" --project src/ChronoLedger.SchemaSync/ChronoLedger.SchemaSync.csproj --startup-project src/ChronoLedger.SchemaSync/ChronoLedger.SchemaSync.csproj --context ChronoLedger.SchemaSync.ChronoLedgerDbContext --configuration Debug --verbose --output-dir Migrations
 
 # Check if the command was successful
 if [ $? -eq 0 ]; then
