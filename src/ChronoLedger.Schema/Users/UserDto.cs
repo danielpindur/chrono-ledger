@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ChronoLedger.Schema.Users;
 
+/// <summary>
+/// Database object representing a user.
+/// </summary>
 public class UserDto
 {
     /// <summary>

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using ChronoLedger.Schema.Users;
 
-namespace ChronoLedger.Schema.Journals;
+namespace ChronoLedger.Schema.Cash;
 
+/// <summary>
+/// Database object representing a journal batch.
+/// </summary>
 public class JournalBatchDto
 {
     /// <summary>
@@ -22,8 +23,11 @@ public class JournalBatchDto
     /// The user who created the journal batch.
     /// </summary>
     [Required]
-    [ForeignKey(nameof(UserDto))]
     public Guid CreatedByUserId { get; set; }
     
-    // public string JournalsJson { get; set; }
+    /// <summary>
+    /// The JSON representation of the journals in the batch.
+    /// </summary>
+    [Required]
+    public string JournalsJson { get; set; }
 }
