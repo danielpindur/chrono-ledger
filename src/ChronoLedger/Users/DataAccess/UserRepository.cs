@@ -9,7 +9,7 @@ internal interface IUserRepository : IRepository
     Task<Guid> ResolveUserIdAsync(string externalUserId);
 }
 
-internal class UserRepository(IDatabaseContext dbContext) : IUserRepository
+internal class UserRepository(IDatabaseContextProvider contextProvider) : IUserRepository
 {
     public async Task<Guid> ResolveUserIdAsync(string externalUserId)
     {
@@ -25,10 +25,12 @@ internal class UserRepository(IDatabaseContext dbContext) : IUserRepository
             SELECT user_id FROM users WHERE external_user_id = @ExternalUserId
             LIMIT 1;";
 
+        var dbContext = await contextProvider.GetContextAsync().ConfigureAwait(false);
+        
         return await dbContext.Connection
             .QuerySingleOrDefaultAsync<Guid>(sql, new
             {
                 ExternalUserId = externalUserId
-            });
+            }).ConfigureAwait(false);
     }
 }

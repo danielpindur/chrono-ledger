@@ -1,6 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ChronoLedger.Common.Database;
 
-public class TransactionAndConnectionScope : IDisposable
+public class TransactionAndConnectionScope : IAsyncDisposable
 {
     private readonly IDatabaseContext _databaseContext;
     private bool _completed;
@@ -8,17 +10,17 @@ public class TransactionAndConnectionScope : IDisposable
     
     public TransactionAndConnectionScope(IServiceProvider serviceProvider)
     {
-        var databaseContext = serviceProvider.GetService(typeof(IDatabaseContext)) as IDatabaseContext;
-
-        _databaseContext = databaseContext ?? throw new ArgumentNullException(nameof(databaseContext));
-        _databaseContext.BeginTransaction();
+        _databaseContext = serviceProvider.GetRequiredService<IDatabaseContext>();
+        
+        // TODO:
+        _databaseContext.BeginTransactionAsync();
     }
     
-    public void Commit()
+    public async Task CommitAsync()
     {
         if (!_disposed)
         {
-            _databaseContext.Commit();
+            await _databaseContext.CommitAsync().ConfigureAwait(false);
             _completed = true;
         }
         else
@@ -27,7 +29,7 @@ public class TransactionAndConnectionScope : IDisposable
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (_disposed)
         {
@@ -36,7 +38,7 @@ public class TransactionAndConnectionScope : IDisposable
 
         if (!_completed)
         {
-            _databaseContext.Rollback();
+            await _databaseContext.RollbackAsync().ConfigureAwait(false);
         }
 
         _disposed = true;

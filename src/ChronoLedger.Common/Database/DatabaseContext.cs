@@ -1,63 +1,83 @@
-using System.Data;
+using System.Data.Common;
 
 namespace ChronoLedger.Common.Database;
 
-public interface IDatabaseContext : IDisposable
+public interface IDatabaseContext : IAsyncDisposable
 {
-    IDbConnection Connection { get; }
+    DbConnection Connection { get; }
     
-    IDbTransaction? Transaction { get; }
+    DbTransaction? Transaction { get; }
 
-    void BeginTransaction();
+    Task BeginTransactionAsync();
 
-    void Commit();
+    Task CommitAsync();
 
-    void Rollback();
+    Task RollbackAsync();
 }
 
-public class DatabaseContext : IDatabaseContext
+internal class DatabaseContext : IDatabaseContext
 {
-    private readonly IDbConnection _connection;
+    private readonly DbConnection _connection;
     private bool _disposed;
     
-    public DatabaseContext(IDbConnectionFactory connectionFactory)
+    private DatabaseContext(DbConnection connection)
     {
-        _connection = connectionFactory.Create();
-        _connection.Open();
-    }   
-    
-    public IDbConnection Connection => _connection;
-    
-    public IDbTransaction? Transaction { get; private set; }
-
-    public void BeginTransaction()
-    {
-        Transaction ??= _connection.BeginTransaction();
+        _connection = connection;
     }
 
-    public void Commit()
+    public DbConnection Connection => _connection;
+    
+    public DbTransaction? Transaction { get; private set; }
+
+    public static async Task<IDatabaseContext> CreateAsync(IDbConnectionFactory connectionFactory)
     {
-        Transaction?.Commit();
-        Transaction?.Dispose();
+        var connection = connectionFactory.Create();
+        await connection.OpenAsync().ConfigureAwait(false);
+        return new DatabaseContext(connection);
+    }
+    
+    public async Task BeginTransactionAsync()
+    {
+        Transaction ??= await _connection.BeginTransactionAsync().ConfigureAwait(false);
+    }
+
+    public async Task CommitAsync()
+    {
+        if (Transaction is null)
+        {
+            return;
+        }
+        
+        await Transaction.CommitAsync().ConfigureAwait(false);
+        await Transaction.DisposeAsync().ConfigureAwait(false);
         Transaction = null;
     }
 
-    public void Rollback()
+    public async Task RollbackAsync()
     {
-        Transaction?.Rollback();
-        Transaction?.Dispose();
+        if (Transaction is null)
+        {
+            return;
+        }
+        
+        await Transaction.RollbackAsync().ConfigureAwait(false);
+        await Transaction.DisposeAsync().ConfigureAwait(false);
         Transaction = null;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (_disposed)
         {
             return;
         }
         
-        Transaction?.Dispose();
-        _connection.Dispose();
+        if (Transaction is not null)
+        {
+            await Transaction.DisposeAsync().ConfigureAwait(false);
+        }
+        
+        await _connection.DisposeAsync().ConfigureAwait(false);
         _disposed = true;
     }
 }

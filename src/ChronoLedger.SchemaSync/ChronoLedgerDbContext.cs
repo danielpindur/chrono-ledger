@@ -13,9 +13,6 @@ public class ChronoLedgerDbContext(DbContextOptions<ChronoLedgerDbContext> optio
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<JournalBatchDto>()
-            .HasKey(x => x.JournalBatchId);
-        
         /*
         modelBuilder.Entity<JournalBatchDto>()
             .Property(e => e.JournalsJson)
@@ -33,12 +30,9 @@ public class ChronoLedgerDbContext(DbContextOptions<ChronoLedgerDbContext> optio
             .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
         
         modelBuilder.Entity<UserDto>()
-            .HasKey(x => x.UserId);
-            
-        modelBuilder.Entity<UserDto>()
             .Property(x => x.UserId)
             .ValueGeneratedOnAdd()
-            .HasDefaultValueSql("uuid_generate_v4()");;
+            .HasDefaultValueSql("uuid_generate_v4()");
         
         modelBuilder.Entity<UserDto>()
             .Property(x => x.ExternalUserId)

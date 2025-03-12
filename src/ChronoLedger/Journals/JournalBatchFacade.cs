@@ -7,8 +7,14 @@ using ChronoLedger.Users.DataAccess;
 
 namespace ChronoLedger.Journals;
 
+/// <summary>
+/// Facade for managing journal batches.
+/// </summary>
 public interface IJournalBatchFacade : IFacade
 {
+    /// <summary>
+    /// Adds a new journal batch.
+    /// </summary>
     Task AddBatch(AddJournalBatchCommand command);
 }
 
@@ -20,14 +26,14 @@ internal class JournalBatchFacade(
     {
         ValidateAddJournalBatch(command);
         
-        var userId = await userRepository.ResolveUserIdAsync(command.ExternalUserId);
+        var userId = await userRepository.ResolveUserIdAsync(command.ExternalUserId).ConfigureAwait(false);
 
         var journalBatch = new JournalBatchDto()
         {
             CreatedByUserId = userId,
         };
 
-        await journalBatchRepository.CreateAsync(journalBatch);
+        await journalBatchRepository.CreateAsync(journalBatch).ConfigureAwait(false);
     }
 
     // TODO: Figure out how to do this better

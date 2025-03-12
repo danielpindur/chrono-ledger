@@ -39,4 +39,24 @@ public class Money : IEquatable<Money>
     {
         return _hashCode;
     }
+    
+    public static bool operator ==(Money? left, Money? right)
+    {
+        if (left is null)
+        {
+            return right is null;
+        }
+        
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Money left, Money right)
+    { 
+        return !(left == right);
+    }
+
+    public override string ToString()
+    { 
+        return $"{_amount} {_currencyCode}";
+    }
 }

@@ -64,7 +64,7 @@ public abstract class DefaultInstaller : Collection<ServiceDescriptor>
 
             if (implementation is not null)
             {
-                Console.WriteLine($"Found facade {implementation.FullName} for type {repositoryInterface.FullName}");
+                Console.WriteLine($"Found repository {implementation.FullName} for type {repositoryInterface.FullName}");
                 
                 Add(ServiceDescriptor.Transient(repositoryInterface, implementation));
             }
@@ -87,6 +87,6 @@ public abstract class DefaultInstaller : Collection<ServiceDescriptor>
         Console.WriteLine("Installing DB context");
         
         Add(ServiceDescriptor.Singleton(dbConnectionFactoryInterface, dbConnectionFactory));
-        Add(ServiceDescriptor.Scoped<IDatabaseContext, DatabaseContext>());
+        Add(ServiceDescriptor.Scoped<IDatabaseContextProvider, DatabaseContextProvider>());
     }
 }

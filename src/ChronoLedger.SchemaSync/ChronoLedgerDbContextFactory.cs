@@ -17,7 +17,7 @@ public class ChronoLedgerDbContextFactory : IDesignTimeDbContextFactory<ChronoLe
         var optionsBuilder = new DbContextOptionsBuilder<ChronoLedgerDbContext>();
         const string connectionStringEnvironmentVariableName = "SchemaSyncSqlConnectionString";
         var connectionString = configuration[connectionStringEnvironmentVariableName];
-
+        
         if (connectionString.IsNullOrEmpty())
         {
             throw new Exception($"Could not find {connectionStringEnvironmentVariableName} environment variable");

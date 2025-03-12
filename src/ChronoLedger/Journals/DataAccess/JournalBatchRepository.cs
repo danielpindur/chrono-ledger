@@ -10,7 +10,7 @@ internal interface IJournalBatchRepository : IRepository
     Task CreateAsync(JournalBatchDto journalBatch);
 }
 
-internal class JournalBatchRepository(IDatabaseContext dbContext) : IJournalBatchRepository
+internal class JournalBatchRepository(IDatabaseContextProvider contextProvider) : IJournalBatchRepository
 {
     public async Task CreateAsync(JournalBatchDto journalBatch)
     {
@@ -22,11 +22,13 @@ internal class JournalBatchRepository(IDatabaseContext dbContext) : IJournalBatc
             )
             RETURNING journal_batch_id;
         ";
+
+        var dbContext = await contextProvider.GetContextAsync().ConfigureAwait(false);
         
         journalBatch.JournalBatchId = await dbContext.Connection
             .ExecuteScalarAsync<long>(sql, new
             {
                 journalBatch.CreatedByUserId
-            });
+            }).ConfigureAwait(false);
     }
 }

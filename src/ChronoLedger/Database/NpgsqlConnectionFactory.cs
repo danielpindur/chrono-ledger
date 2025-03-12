@@ -1,4 +1,4 @@
-using System.Data;
+using System.Data.Common;
 using ChronoLedger.Common.Database;
 using Npgsql;
 
@@ -15,7 +15,7 @@ internal class NpgsqlConnectionFactory : IDbConnectionFactory
                                 "Environment variable 'DatabaseSqlConnectionString' not set.");
     }
     
-    public IDbConnection Create()
+    public DbConnection Create()
     {
         return new NpgsqlConnection(_connectionString);
     }

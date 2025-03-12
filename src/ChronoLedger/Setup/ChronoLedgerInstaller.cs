@@ -4,5 +4,4 @@ namespace ChronoLedger.Setup;
 
 public class ChronoLedgerInstaller : DefaultInstaller
 {
-    
 }
