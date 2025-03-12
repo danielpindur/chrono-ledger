@@ -1,6 +1,6 @@
 using ChronoLedger.Common.Database;
 using ChronoLedger.Common.Repositories;
-using ChronoLedger.Schema.Journals;
+using ChronoLedger.Schema.Cash;
 using Dapper;
 
 namespace ChronoLedger.Journals.DataAccess;

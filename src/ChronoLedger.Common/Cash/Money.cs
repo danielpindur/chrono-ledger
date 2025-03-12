@@ -2,21 +2,21 @@ namespace ChronoLedger.Common.Cash;
 
 public class Money : IEquatable<Money>
 {
-    private readonly decimal _amount;
+    private readonly decimal _value;
     private readonly CurrencyCode _currencyCode;
     
     private readonly int _hashCode;
     
-    public Money(decimal amount, CurrencyCode currencyCode)
+    public Money(decimal value, CurrencyCode currencyCode)
     {
-        _amount = amount;
+        _value = value;
         _currencyCode = currencyCode;
 
-        _hashCode = amount.GetHashCode() ^
+        _hashCode = value.GetHashCode() ^
                     StringComparer.InvariantCultureIgnoreCase.GetHashCode(_currencyCode.ToString());
     }
     
-    public decimal Amount => _amount;
+    public decimal Value => _value;
     
     public CurrencyCode CurrencyCode => _currencyCode;
 
@@ -32,7 +32,7 @@ public class Money : IEquatable<Money>
         if (other is null) { return false; }
 
         return _currencyCode.Equals(other._currencyCode) && 
-               _amount.Equals(other._amount);
+               _value.Equals(other._value);
     }
 
     public override int GetHashCode()
@@ -57,6 +57,6 @@ public class Money : IEquatable<Money>
 
     public override string ToString()
     { 
-        return $"{_amount} {_currencyCode}";
+        return $"{_value} {_currencyCode}";
     }
 }

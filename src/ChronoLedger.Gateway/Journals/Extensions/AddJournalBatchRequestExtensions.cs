@@ -9,7 +9,9 @@ public static class AddJournalBatchRequestExtensions
     {
         return new AddJournalBatchCommand()
         {
-            ExternalUserId = request.ExternalUserId
+            ExternalUserId = request.ExternalUserId,
+            LedgerDate = new DateTime(),
+            JournalEntries = new List<AddJournalBatchCommand.JournalEntry>()
         };
     }
 }
