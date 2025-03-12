@@ -7,15 +7,17 @@ public class TransactionAndConnectionScope : IAsyncDisposable
     private readonly IDatabaseContext _databaseContext;
     private bool _completed;
     private bool _disposed;
-    
+
     public TransactionAndConnectionScope(IServiceProvider serviceProvider)
     {
         _databaseContext = serviceProvider.GetRequiredService<IDatabaseContext>();
-        
-        // TODO:
-        _databaseContext.BeginTransactionAsync();
     }
-    
+
+    public async Task BeginAsync()
+    {
+        await _databaseContext.BeginTransactionAsync().ConfigureAwait(false);
+    }
+
     public async Task CommitAsync()
     {
         if (!_disposed)
