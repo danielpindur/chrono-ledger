@@ -15,6 +15,10 @@ public class Money : IEquatable<Money>
         _hashCode = amount.GetHashCode() ^
                     StringComparer.InvariantCultureIgnoreCase.GetHashCode(_currencyCode.ToString());
     }
+    
+    public decimal Amount => _amount;
+    
+    public CurrencyCode CurrencyCode => _currencyCode;
 
     public override bool Equals(object? obj)
     {

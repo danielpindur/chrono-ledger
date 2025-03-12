@@ -2,8 +2,10 @@ using System.Text.Json.Serialization;
 using ChronoLedger.Gateway.Routing;
 using ChronoLedger.Gateway.Setup;
 using ChronoLedger.Gateway.Swagger;
+using ChronoLedger.Setup;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,7 @@ builder.Services
         options.SchemaFilter<EnumSchemaFilter>();
     });
 
+builder.Services.Add(new ChronoLedgerInstaller());
 GatewayInstaller.Install(builder.Services);
 
 var app = builder.Build();

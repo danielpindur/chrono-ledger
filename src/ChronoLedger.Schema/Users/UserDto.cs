@@ -1,6 +1,6 @@
 namespace ChronoLedger.Schema.Users;
 
-public class User
+public class UserDto
 {
     public Guid UserId { get; set; }
     

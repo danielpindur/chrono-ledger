@@ -16,10 +16,10 @@ public class ChronoLedgerDbContextFactory : IDesignTimeDbContextFactory<ChronoLe
         var optionsBuilder = new DbContextOptionsBuilder<ChronoLedgerDbContext>();
         var connectionString = configuration["SchemaSyncSqlConnectionString"];
         
-        Console.WriteLine(connectionString);
+        optionsBuilder
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention();
         
-        optionsBuilder.UseNpgsql(connectionString);
-
         return new ChronoLedgerDbContext(optionsBuilder.Options);
     }
 }

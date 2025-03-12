@@ -1,6 +1,6 @@
 ﻿namespace ChronoLedger.Schema.Journals;
 
-public class JournalBatch
+public class JournalBatchDto
 {
     public long JournalBatchId { get; set; }
     
@@ -8,5 +8,5 @@ public class JournalBatch
     
     public Guid CreatedByUserId { get; set; }
     
-    public string JournalsJson { get; set; }
+    // public string JournalsJson { get; set; }
 }

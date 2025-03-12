@@ -22,62 +22,69 @@ namespace ChronoLedger.SchemaSync.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ChronoLedger.Schema.Journals.JournalBatch", b =>
+            modelBuilder.Entity("ChronoLedger.Schema.Journals.JournalBatchDto", b =>
                 {
                     b.Property<long>("JournalBatchId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("journal_batch_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("JournalBatchId"));
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date_time")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
-                    b.Property<string>("JournalsJson")
-                        .IsRequired()
-                        .HasColumnType("json");
+                    b.HasKey("JournalBatchId")
+                        .HasName("pk_journal_batches");
 
-                    b.HasKey("JournalBatchId");
-
-                    b.ToTable("JournalBatches");
+                    b.ToTable("journal_batches", (string)null);
                 });
 
-            modelBuilder.Entity("ChronoLedger.Schema.Users.User", b =>
+            modelBuilder.Entity("ChronoLedger.Schema.Users.UserDto", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date_time")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP AT TIME ZONE 'UTC'");
 
                     b.Property<string>("ExternalUserId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("external_user_id");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserId")
+                        .HasName("pk_users");
 
                     b.HasIndex("ExternalUserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_external_user_id");
 
-                    b.ToTable("Users");
+                    b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("ChronoLedger.Schema.Journals.JournalBatch", b =>
+            modelBuilder.Entity("ChronoLedger.Schema.Journals.JournalBatchDto", b =>
                 {
-                    b.HasOne("ChronoLedger.Schema.Users.User", null)
+                    b.HasOne("ChronoLedger.Schema.Users.UserDto", null)
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_journal_batches_users_created_by_user_id");
                 });
 #pragma warning restore 612, 618
         }
